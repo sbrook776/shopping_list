@@ -6,7 +6,8 @@ const itemFilter = document.querySelector("#filter");
 
 function submitInput(e) {
 	e.preventDefault();
-	const newItem = itemInput.value;
+	//converts first letter to uppercase.
+	const newItem = itemInput.value[0].toUpperCase() + itemInput.value.slice("1");
 	if (newItem === "") {
 		alert("Please enter an item");
 		return;
@@ -18,6 +19,7 @@ function submitInput(e) {
 	itemList.appendChild(li);
 	checkUI();
 	li.appendChild(button);
+	//clears input
 	itemInput.value = "";
 }
 
@@ -44,10 +46,25 @@ function removeItem(e) {
 	}
 }
 function clearItems() {
-	while (itemList.firstChild) {
-		itemList.removeChild(itemList.firstChild);
+	if (confirm("Are you sure you want to clear all items?")) {
+		while (itemList.firstChild) {
+			itemList.removeChild(itemList.firstChild);
+		}
+		checkUI();
 	}
-	checkUI();
+}
+
+function filterItems(e) {
+	const items = itemList.querySelectorAll("li");
+	const text = e.target.value.toLowerCase();
+	items.forEach((item) => {
+		const itemName = item.firstChild.textContent.toLowerCase();
+		if (itemName.indexOf(text) != -1) {
+			item.style.display = "flex";
+		} else {
+			item.style.display = "none";
+		}
+	});
 }
 
 function checkUI() {
@@ -66,5 +83,6 @@ function checkUI() {
 itemForm.addEventListener("submit", submitInput);
 itemList.addEventListener("click", removeItem);
 clearBtn.addEventListener("click", clearItems);
+itemFilter.addEventListener("input", filterItems);
 
 checkUI();
